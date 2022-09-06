@@ -30,10 +30,9 @@ _pool = ProcessPoolExecutor(max_workers=n_workers)
 
 _spec = {
     'model': {
-        'method': 'GFN2-xTB',
+        'method': 'pm6',
         'basis': None
     },
-    'keywords': {'accuracy': 0.05}
 }
 
 
@@ -99,13 +98,13 @@ def _compute_vertical(smiles: str) -> float:
     mol = Molecule.from_data(xyz)
     opt_input = OptimizationInput(input_specification=_spec,
                                   initial_molecule=mol,
-                                  keywords={"program": "xtb"})
+                                  keywords={"program": "mopac"})
     opt_res = compute_procedure(opt_input, "geometric", raise_error=True)
 
     # Compute the energy of the relaxed geometry in charged form
     charged_mol = Molecule.from_data(opt_res.final_molecule.to_string('xyz'), molecular_charge=1)
     input_spec = AtomicInput(molecule=charged_mol, driver='energy', **_spec)
-    charged_res = compute(input_spec, 'xtb', raise_error=True)
+    charged_res = compute(input_spec, 'mopac', raise_error=True)
 
     return charged_res.return_result - opt_res.energies[-1]
 
