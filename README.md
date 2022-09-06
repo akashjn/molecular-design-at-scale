@@ -1,25 +1,30 @@
-# ML-in-the-loop molecular design with Parsl
+# Multi-Property Molecular Design on HPC
 
-This repository contains a tutorial showing how Parsl can be used to write a machine-learning-guided search for high-performing molecules.
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/globus-labs/molecular-design-at-scale/HEAD)
 
-The objective of this application is to identify which molecules have the largest ionization energies (IE, the amount of energy required to remove an electron). 
+This repository contains a tutorial showing how to rapidly design molecules which meet several proeprties by using Bayesian optimization on HPC.
 
-IE can be computed using various simulation packages (here we use [xTB](https://xtb-docs.readthedocs.io/en/latest/contents.html)); however, execution of these simulations is expensive, and thus, given a finite compute budget, we must carefully select which molecules to explore. 
+The objective of this application is to identify which molecules have the largest ionization energies (IE, the amount of energy required to remove an electron) _and something else (TBD).
+
+IE can be computed using various simulation packages (here we use [MOPAC](http://openmopac.net/)); however, execution of these simulations is expensive, and thus, given a finite compute budget, we must carefully select which molecules to explore. 
 
 In this example, we use machine learning to predict molecules with high IE based on previous computations (a process often called [active learning](https://pubs.acs.org/doi/abs/10.1021/acs.chemmater.0c00768)). We iteratively retrain the machine learning model to improve the accuracy of predictions. 
 
-## Installation
+## Running the Tutorial
 
-The demo uses a few codes that are easiest to install with Anaconda. Our environment should work on both Linux and OS X can can be installed by:
+The tutorial is designed to work on Binder so that you can run it without installing anything.
+
+Just click this link: [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/globus-labs/molecular-design-at-scale/HEAD)
+
+### Running Locally
+
+Running with local resources can be much faster and allow you to save changes you make to the notebooks.
+
+The demo uses a few codes that are easiest to install with Anaconda. Our environment should work on both Linux and OS X (though M1 systems can be problematic) and can be installed by:
 
 ```bash
 conda env create --file environment.yml
 ```
+## Tutorial Guide
 
-
-## Tutorial
-
-The notebook steps through the various phases of the workflow. 
-1. Invoking the xTB simulation using Parsl such that it can run in parallel on configured resources (from several cores on a laptop through to thousands of nodes on a supercomputer). 
-2. Developing a machine learning workflow can be created to train a model, use it to infer IE, and then combine inferences into a single data frame.
-3. Combining the simulation and machine learning workflow such that the machine learning model is iteratively retrained and applied to the search space, with the highest value candidates then being prioritized for simulation, and the resulting simulations being used to retrain the model.
+TBD
