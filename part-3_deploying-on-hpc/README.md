@@ -1,6 +1,6 @@
 # Deploying Active Learning on HPC
 
-Taking full advantage of active learning's ability to autonomously design experiments requires remove humans from the design loops.
+Taking full advantage of active learning's ability to autonomously design experiments requires removing humans from the design process.
 
 ## Learning Objectives
 
