@@ -167,6 +167,49 @@ class MorganFingerprintTransformer(BaseEstimator, TransformerMixin):
         fing = _pool.map(my_func, X, chunksize=2048)
         return np.vstack(fing)
 
+def compute_rdkit_descriptors(smiles: str):
+    """
+    Function will return all 208 RDKit descriptors
+    smiles is a pandas series or a list of smiles
+    """
+    from rdkit.ML.Descriptors import MoleculeDescriptors
+    from rdkit.Chem import Descriptors
+    mol = Chem.MolFromSmiles(smiles) 
+    calc = MoleculeDescriptors.MolecularDescriptorCalculator([x[0] for x in Descriptors._descList])
+    mol=Chem.AddHs(mol)
+    # Calculate all 208 descriptors for each molecule
+    descriptor = calc.CalcDescriptors(mol)
+    arr = np.asarray(descriptor)
+    return arr
+
+class RDKitDescriptor2pcsTransformer(BaseEstimator, TransformerMixin):
+    """Class that converts SMILES strings to fingerprint vectors"""
+    from sklearn.decomposition import PCA # Principle component analysis
+    
+
+    def fit(self, X, y=None):
+        return self  # Do need to do anything
+
+    def transform(self, X, y=None):
+        """Compute the fingerprints
+        
+        Args:
+            X: List of SMILES strings
+        Returns:
+            Array of fingerprints
+        """
+        import pickle as pk
+        my_func = partial(compute_rdkit_descriptors)
+        desc = _pool.map(my_func, X, chunksize=2048)
+        
+        descs = np.vstack(desc)
+        
+        st_reload = pk.load(open("st.pkl",'rb'))
+        descs_scaled = st_reload.transform(descs)
+        pca_reload = pk.load(open("pca.pkl",'rb'))
+        pcs = pca_reload.transform(descs_scaled)
+        
+        return pcs
 
 def train_model(smiles: List[str], properties: List[float]):
     """Train a machine learning model using Morgan Fingerprints.
